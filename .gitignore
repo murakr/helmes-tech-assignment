@@ -1,0 +1,10 @@
+.idea
+*.iml
+.DS_Store
+node_modules/
+dist/
+.angular/
+target/
+.env
+.env.*
+!.env.example

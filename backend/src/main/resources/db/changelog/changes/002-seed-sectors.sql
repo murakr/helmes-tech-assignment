@@ -82,3 +82,4 @@ VALUES
     (114, 'Rail', 21, 77),
     (112, 'Road', 21, 78),
     (113, 'Water', 21, 79);
+--rollback DELETE FROM sector;

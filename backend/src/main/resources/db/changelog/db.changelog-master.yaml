@@ -6,3 +6,11 @@ databaseChangeLog:
   - include:
       file: changes/002-seed-sectors.sql
       relativeToChangelogFile: true
+
+  - include:
+      file: changes/003-create-user-profile.sql
+      relativeToChangelogFile: true
+
+  - include:
+      file: changes/004-create-user-profile-sector.sql
+      relativeToChangelogFile: true

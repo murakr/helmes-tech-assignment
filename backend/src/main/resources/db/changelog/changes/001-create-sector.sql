@@ -9,3 +9,4 @@ CREATE TABLE sector (
 
     CONSTRAINT fk_sector_parent FOREIGN KEY (parent_id) REFERENCES sector(id)
 );
+--rollback DROP TABLE sector;

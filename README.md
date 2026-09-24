@@ -9,15 +9,13 @@ This assignment is created for Helmes as a test for junior Angular developer pos
 
 ## Used technologies
 
-○ Angular 22.1.0
+• Angular 22.1.0
 
-○ Typescript 6.0.2
+• Typescript 6.0.2
 
 ## Starting the project
 
 ...
-
-## Author
 
 ---
 Richard Murak

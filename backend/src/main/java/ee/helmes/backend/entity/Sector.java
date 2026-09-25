@@ -26,6 +26,13 @@ public class Sector {
     protected Sector() {
     }
 
+    public Sector(Integer id, String name, Integer parentId, Integer sortOrder) {
+        this.id = id;
+        this.name = name;
+        this.parentId = parentId;
+        this.sortOrder = sortOrder;
+    }
+
     public Integer getId() {
         return id;
     }

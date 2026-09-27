@@ -1,10 +1,15 @@
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ProfileForm } from './profile-form/profile-form';
 
 @Component({
-  imports: [],
   selector: 'app-root',
+  imports: [ProfileForm],
+  template: `
+    <main class="page">
+      <app-profile-form />
+    </main>
+  `,
   styleUrl: './app.scss',
-  template: 'hello world',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class App {
-}
+export class App {}

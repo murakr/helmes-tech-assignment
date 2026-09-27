@@ -1,0 +1,81 @@
+<form [formGroup]="form" (ngSubmit)="save()" novalidate>
+  <p class="intro">Please enter your name and pick the sectors you are currently involved in.</p>
+
+  @switch (loadState()) {
+    @case ('loading') {
+      <p role="status">Loading…</p>
+    }
+    @case ('failed') {
+      <p role="alert">
+        The form could not be loaded.
+        <button type="button" (click)="load()">Try again</button>
+      </p>
+    }
+    @case ('loaded') {
+      @let nameError = errorFor('name');
+      <div class="field">
+        <label for="name">Name</label>
+        <input
+          id="name"
+          type="text"
+          formControlName="name"
+          autocomplete="name"
+          [attr.maxlength]="nameMaxLength"
+          [attr.aria-invalid]="nameError ? true : null"
+          [attr.aria-describedby]="nameError ? 'name-error' : null"
+        />
+        @if (nameError) {
+          <p id="name-error" class="field-error">{{ nameError }}</p>
+        }
+      </div>
+
+      @let sectorsError = errorFor('sectorIds');
+      <div class="field">
+        <label for="sectors">Sectors</label>
+        <select
+          id="sectors"
+          multiple
+          size="12"
+          formControlName="sectorIds"
+          [attr.aria-invalid]="sectorsError ? true : null"
+          [attr.aria-describedby]="sectorsError ? 'sectors-hint sectors-error' : 'sectors-hint'"
+        >
+          @for (option of sectorOptions(); track option.id) {
+            <option [ngValue]="option.id">{{ option.label }}</option>
+          }
+        </select>
+        @if (sectorsError) {
+          <p id="sectors-error" class="field-error">{{ sectorsError }}</p>
+        }
+      </div>
+
+      @let termsError = errorFor('agreedToTerms');
+      <div class="field">
+        <label class="checkbox">
+          <input
+            type="checkbox"
+            formControlName="agreedToTerms"
+            [attr.aria-invalid]="termsError ? true : null"
+            [attr.aria-describedby]="termsError ? 'terms-error' : null"
+          />
+          Agree to terms
+        </label>
+        @if (termsError) {
+          <p id="terms-error" class="field-error">{{ termsError }}</p>
+        }
+      </div>
+
+      <button type="submit" [disabled]="saving()">{{ saving() ? 'Saving…' : 'Save' }}</button>
+
+      @if (statusMessage(); as message) {
+        <p
+          class="status-message"
+          [class.status-message--error]="message.kind === 'error'"
+          [attr.role]="message.kind === 'error' ? 'alert' : 'status'"
+        >
+          {{ message.text }}
+        </p>
+      }
+    }
+  }
+</form>

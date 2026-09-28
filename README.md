@@ -19,6 +19,8 @@ A form where users enter their name, pick the sectors they are involved in and a
 Requires Docker.
 
 ```bash
+git clone https://github.com/murakr/helmes-tech-assignment.git
+cd helmes-tech-assignment
 cp .env.example .env
 docker compose up --build
 ```

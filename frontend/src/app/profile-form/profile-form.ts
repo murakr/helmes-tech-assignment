@@ -1,4 +1,14 @@
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  ElementRef,
+  inject,
+  Injector,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -8,10 +18,10 @@ import { UserProfile } from '../api/profile';
 import { ProfileApi } from '../api/profile-api';
 import { Sector } from '../api/sector';
 import { SectorApi } from '../api/sector-api';
+import { SectorPicker } from '../sector-picker/sector-picker';
 import { notBlank } from './validators';
 
 const NAME_MAX_LENGTH = 100;
-const INDENT_PER_LEVEL = '\u00A0'.repeat(4);
 
 type FormField = 'name' | 'sectorIds' | 'agreedToTerms';
 
@@ -36,7 +46,7 @@ interface StatusMessage {
 
 @Component({
   selector: 'app-profile-form',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, SectorPicker],
   templateUrl: './profile-form.html',
   styleUrl: './profile-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,6 +55,8 @@ export class ProfileForm implements OnInit {
   private readonly sectorApi = inject(SectorApi);
   private readonly profileApi = inject(ProfileApi);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly injector = inject(Injector);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
   protected readonly nameMaxLength = NAME_MAX_LENGTH;
 
@@ -54,17 +66,16 @@ export class ProfileForm implements OnInit {
     agreedToTerms: [false, Validators.requiredTrue],
   });
 
+  protected readonly sectors = signal<readonly Sector[]>([]);
   protected readonly loadState = signal<'loading' | 'loaded' | 'failed'>('loading');
   protected readonly saving = signal(false);
   protected readonly statusMessage = signal<StatusMessage | null>(null);
 
-  private readonly sectors = signal<readonly Sector[]>([]);
-  protected readonly sectorOptions = computed(() =>
-    this.sectors().map((sector) => ({
-      id: sector.id,
-      label: INDENT_PER_LEVEL.repeat(sector.level) + sector.name,
-    })),
-  );
+  constructor() {
+    this.form.valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.statusMessage.set(null));
+  }
 
   ngOnInit(): void {
     this.load();
@@ -89,6 +100,7 @@ export class ProfileForm implements OnInit {
   protected save(): void {
     this.form.markAllAsTouched();
     if (this.form.invalid) {
+      this.focusFirstInvalidField();
       return;
     }
 
@@ -126,11 +138,14 @@ export class ProfileForm implements OnInit {
   }
 
   private fillForm(profile: UserProfile): void {
-    this.form.setValue({
-      name: profile.name,
-      sectorIds: [...profile.sectorIds],
-      agreedToTerms: profile.agreedToTerms,
-    });
+    this.form.setValue(
+      {
+        name: profile.name,
+        sectorIds: [...profile.sectorIds],
+        agreedToTerms: profile.agreedToTerms,
+      },
+      { emitEvent: false },
+    );
     this.form.markAsPristine();
     this.form.markAsUntouched();
   }
@@ -148,5 +163,18 @@ export class ProfileForm implements OnInit {
         ? 'Please correct the highlighted fields.'
         : (problem?.detail ?? 'Saving failed. Please try again.'),
     });
+    if (hasFieldErrors) {
+      this.focusFirstInvalidField();
+    }
+  }
+
+  private focusFirstInvalidField(): void {
+    afterNextRender(
+      () => {
+        const firstError = this.host.nativeElement.querySelector('.field-error');
+        firstError?.closest('.field')?.querySelector<HTMLElement>('input')?.focus();
+      },
+      { injector: this.injector },
+    );
   }
 }

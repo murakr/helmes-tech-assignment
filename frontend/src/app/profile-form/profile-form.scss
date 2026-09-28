@@ -1,0 +1,46 @@
+:host {
+  display: block;
+}
+
+.field {
+  margin-bottom: 1.25rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+input[type='text'] {
+  box-sizing: border-box;
+  width: 100%;
+  font: inherit;
+}
+
+fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+legend {
+  margin-bottom: 0.25rem;
+  padding: 0;
+}
+
+.field-error,
+.status-message--error {
+  color: #c00;
+}
+
+.field-error {
+  margin: 0.25rem 0 0;
+  font-size: 0.875rem;
+}

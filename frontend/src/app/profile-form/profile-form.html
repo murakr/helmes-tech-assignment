@@ -30,24 +30,13 @@
       </div>
 
       @let sectorsError = errorFor('sectorIds');
-      <div class="field">
-        <label for="sectors">Sectors</label>
-        <select
-          id="sectors"
-          multiple
-          size="12"
-          formControlName="sectorIds"
-          [attr.aria-invalid]="sectorsError ? true : null"
-          [attr.aria-describedby]="sectorsError ? 'sectors-hint sectors-error' : 'sectors-hint'"
-        >
-          @for (option of sectorOptions(); track option.id) {
-            <option [ngValue]="option.id">{{ option.label }}</option>
-          }
-        </select>
+      <fieldset class="field" [attr.aria-describedby]="sectorsError ? 'sectors-error' : null">
+        <legend>Sectors</legend>
+        <app-sector-picker formControlName="sectorIds" [sectors]="sectors()" />
         @if (sectorsError) {
           <p id="sectors-error" class="field-error">{{ sectorsError }}</p>
         }
-      </div>
+      </fieldset>
 
       @let termsError = errorFor('agreedToTerms');
       <div class="field">

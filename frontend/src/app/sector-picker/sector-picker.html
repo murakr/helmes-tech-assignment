@@ -1,0 +1,20 @@
+<div class="picker-header">
+  <p class="selection-count" aria-live="polite">{{ selectedIds().size }} selected</p>
+  <button type="button" (click)="clearAll()" [disabled]="disabled() || selectedIds().size === 0">
+    Clear all
+  </button>
+</div>
+<div class="sector-list">
+  @for (sector of sectors(); track sector.id) {
+    <label class="sector" [style.padding-left.rem]="sector.level * 1.5">
+      <input
+        #checkbox
+        type="checkbox"
+        [checked]="selectedIds().has(sector.id)"
+        [disabled]="disabled()"
+        (change)="toggle(sector.id, checkbox.checked)"
+      />
+      {{ sector.name }}
+    </label>
+  }
+</div>

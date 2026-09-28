@@ -72,9 +72,7 @@ export class ProfileForm implements OnInit {
   protected readonly statusMessage = signal<StatusMessage | null>(null);
 
   constructor() {
-    this.form.valueChanges
-      .pipe(takeUntilDestroyed())
-      .subscribe(() => this.statusMessage.set(null));
+    this.form.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => this.statusMessage.set(null));
   }
 
   ngOnInit(): void {

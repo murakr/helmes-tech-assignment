@@ -34,7 +34,9 @@ describe('ProfileApi', () => {
     let result: UserProfile | null | undefined;
 
     api.getProfile().subscribe((response) => (result = response));
-    http.expectOne({ method: 'GET', url: '/api/profile' }).flush(null, { status: 204, statusText: 'No Content' });
+    http
+      .expectOne({ method: 'GET', url: '/api/profile' })
+      .flush(null, { status: 204, statusText: 'No Content' });
 
     expect(result).toBeNull();
   });
